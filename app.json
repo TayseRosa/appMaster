@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "mulheresEmpreendedoras",
+    "slug": "mulheresEmpreendedoras",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
