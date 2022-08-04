@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
     Container,
     InputArea,
@@ -10,6 +10,8 @@ import {
 } from './styles';
 
 import Api from '../../Api';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserContext } from '../../contexts/UserContext';
 
 import BarberLogo from '../../assets/barber.svg';
 import EmailIcon from '../../assets/email.svg';
@@ -19,6 +21,8 @@ import SignInput from "../../components/SignInput";
 import { useNavigation } from "@react-navigation/native";
 
 export default () => {
+    //dispatch
+    const { dispatch:userDispatch } = useContext(UserContext);
     const navigation = useNavigation();
 
     const [ emailField, setEmailField ] = useState('suporte@b7web.com.br');
@@ -29,7 +33,20 @@ export default () => {
 
             let json = await Api.signIn(emailField, passwordField);
             if (json.token){
-                alert('Deu certo')
+                //salva o token no async storage
+                await AsyncStorage.setItem('token', json.token);
+
+                //salva no context
+                userDispatch({
+                    type: 'setAvatar',
+                    payload:{
+                        avatar: json.data.avatar
+                    }
+                });
+
+                navigation.reset({
+                    routes: [{name: 'MainTab'}]
+                })
             }else{
                 alert('E-mail e/ou senha incorretos')
             }
